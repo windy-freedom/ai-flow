@@ -25,17 +25,27 @@
    ```
 
 2. **配置 API Key**:
-   为了安全起见，API Key 不应硬编码在代码中。请将你的 MiniMax API Key 设置为环境变量 `MINIMAX_API_KEY`。
+   为了安全起见，API Key 不应硬编码在代码中。本项目支持以下两种配置方式（优先级从高到低）：
 
-   **Windows**:
-   ```cmd
-   set MINIMAX_API_KEY=你的API_KEY
-   ```
-   **macOS/Linux**:
-   ```bash
-   export MINIMAX_API_KEY=你的API_KEY
-   ```
-   或者，你可以在运行脚本前，在你的环境中设置它。
+   a. **通过 `config.py` 文件配置 (推荐)**:
+      在项目根目录下找到 `config.py` 文件。如果不存在，请手动创建。
+      打开 `config.py` 并添加以下内容，将 `你的API_KEY` 替换为你的实际 MiniMax API Key：
+      ```python
+      MINIMAX_API_KEY = "你的API_KEY"
+      ```
+      这种方式方便管理，且不易泄露。
+
+   b. **通过环境变量配置**:
+      将你的 MiniMax API Key 设置为环境变量 `MINIMAX_API_KEY`。
+      **Windows**:
+      ```cmd
+      set MINIMAX_API_KEY=你的API_KEY
+      ```
+      **macOS/Linux**:
+      ```bash
+      export MINIMAX_API_KEY=你的API_KEY
+      ```
+      请确保在运行脚本的同一个终端会话中设置环境变量。
 
 3. **运行工作流**:
    ```bash
