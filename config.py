@@ -1,0 +1,1 @@
+MINIMAX_API_KEY = "#Your Key" #use Your API Key from MiniMax

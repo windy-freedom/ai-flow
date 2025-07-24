@@ -1,0 +1,4 @@
+# Ignore generated image and video files
+*.jpg
+*.mp4
+__pycache__/

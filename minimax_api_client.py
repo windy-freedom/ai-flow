@@ -1,13 +1,14 @@
 import requests
 import json
 import os
+from config import MINIMAX_API_KEY # Import API key from config.py
 
 class MinimaxAPIClient:
     def __init__(self, api_key=None):
-        # It's better to get the API key from an environment variable for security
-        self.api_key = api_key if api_key else os.getenv("MINIMAX_API_KEY")
+        # Prioritize passed api_key, then config.py, then environment variable
+        self.api_key = api_key if api_key else MINIMAX_API_KEY
         if not self.api_key:
-            raise ValueError("Minimax API key not found. Please set the MINIMAX_API_KEY environment variable or pass it during initialization.")
+            raise ValueError("Minimax API key not found. Please set MINIMAX_API_KEY in config.py or as an environment variable, or pass it during initialization.")
         
         self.headers = {
             'Authorization': f'Bearer {self.api_key}',
@@ -57,8 +58,9 @@ class MinimaxAPIClient:
 # Example usage (for testing purposes, not part of the main client)
 if __name__ == '__main__':
     # For testing, you might temporarily set the API key here or ensure it's in your environment
-    # os.environ["MINIMAX_API_KEY"] = "YOUR_ACTUAL_API_KEY" 
+    # os.environ["MINIMAX_API_KEY"] = "YOUR_ACTUAL_API_KEY"
     try:
+        # When running this example, it will try to get the key from config.py first, then env.
         client = MinimaxAPIClient()
         print("MinimaxAPIClient initialized successfully.")
         # You can add a simple test call here if you have a test endpoint
