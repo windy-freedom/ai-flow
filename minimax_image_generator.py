@@ -1,15 +1,13 @@
-import requests
 import json
 import os
 from datetime import datetime
 import argparse # Import argparse for command-line arguments
+import requests # Keep requests for downloading images
+from minimax_api_client import MinimaxAPIClient # Import the new API client
 
-url = "https://api.minimaxi.com/v1/image_generation"
-api_key="YOUR_API_KEY" # 请替换为您的实际 API Key
-# api_key 应该从环境变量或配置文件中获取，不应硬编码在代码中。
-# 例如：
-# import os
-# api_key = os.getenv("MINIMAX_API_KEY")
+# --- Configuration ---
+# API key will be handled by MinimaxAPIClient, no need to hardcode here.
+image_generation_url = "https://api.minimaxi.com/v1/image_generation"
 
 # --- Argument Parsing ---
 parser = argparse.ArgumentParser(description="Generate images using MiniMax API.")
@@ -31,29 +29,28 @@ response_format = args.response_format
 num_images = args.n
 prompt_optimizer = args.prompt_optimizer
 
-payload = json.dumps({
+# Initialize the API client
+try:
+    client = MinimaxAPIClient()
+except ValueError as e:
+    print(f"Error initializing Minimax API client: {e}")
+    exit(1) # Exit if API client cannot be initialized
+
+payload = {
   "model": model_name,
   "prompt": prompt_text,
   "aspect_ratio": aspect_ratio,
   "response_format": response_format,
   "n": num_images,
   "prompt_optimizer": prompt_optimizer
-})
-headers = {
-  'Authorization': f'Bearer {api_key}',
-  'Content-Type': 'application/json'
 }
 
 print("Generating image...")
-response = requests.request("POST", url, headers=headers, data=payload)
-
-# Print raw response text for debugging
-print(f"Raw response text: {response.text}")
-
 try:
-    response_data = response.json()
+    response_data = client.post(image_generation_url, payload)
+    
     # Corrected line to access image URLs
-    if response.status_code == 200 and "data" in response_data and "image_urls" in response_data["data"]:
+    if "data" in response_data and "image_urls" in response_data["data"]:
         print("Image generated successfully. Downloading and saving...")
         image_urls = response_data["data"]["image_urls"]
         
@@ -80,7 +77,5 @@ try:
                 print(f"Error saving image {i+1}: {e}")
     else:
         print(f"Image generation failed. Response: {response_data}")
-except json.JSONDecodeError:
-    print("Failed to decode JSON response. The response might not be in JSON format.")
 except Exception as e:
-    print(f"An unexpected error occurred: {e}")
+    print(f"An error occurred during image generation API call: {e}")
